@@ -23,6 +23,7 @@
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
+            "baseHref": "/Cash_flow_dashboard/",
             "assets": [
               {
                 "glob": "**/*",
