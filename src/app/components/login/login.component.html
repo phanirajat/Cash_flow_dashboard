@@ -42,7 +42,7 @@
         {{ isLoading() ? 'Logging in...' : 'Login' }}
       </button>
 
-      @if (errorMessage(); track errorMessage()) {
+      @if (errorMessage()) {
         <div class="error-banner">
           {{ errorMessage() }}
         </div>

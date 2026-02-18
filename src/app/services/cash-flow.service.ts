@@ -1,11 +1,13 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject, effect } from '@angular/core';
 import { Income } from '../models/income.model';
 import { Expense } from '../models/expense.model';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CashFlowService {
+  private authService = inject(AuthService);
   private incomeList = signal<Income[]>([]);
   private expenseList = signal<Expense[]>([]);
 
@@ -23,7 +25,17 @@ export class CashFlowService {
   netProfit = computed(() => this.totalIncome() - this.totalExpenses());
 
   constructor() {
-    this.loadFromLocalStorage();
+    // Whenever authentication state changes, reload data for current user
+    effect(() => {
+      const currentUser = this.authService.currentUser();
+      if (currentUser) {
+        this.loadFromLocalStorage();
+      } else {
+        // Clear data when logged out
+        this.incomeList.set([]);
+        this.expenseList.set([]);
+      }
+    });
   }
 
   addIncome(senderName: string, amount: number, date: Date): void {
@@ -92,14 +104,25 @@ export class CashFlowService {
     return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }
 
+  private getStorageKeys(): { incomeKey: string; expenseKey: string } {
+    const currentUser = this.authService.currentUser();
+    const phoneNumber = currentUser?.phoneNumber || 'guest';
+    return {
+      incomeKey: `cashflow_${phoneNumber}_incomes`,
+      expenseKey: `cashflow_${phoneNumber}_expenses`,
+    };
+  }
+
   private saveToLocalStorage(): void {
-    localStorage.setItem('incomes', JSON.stringify(this.incomeList()));
-    localStorage.setItem('expenses', JSON.stringify(this.expenseList()));
+    const { incomeKey, expenseKey } = this.getStorageKeys();
+    localStorage.setItem(incomeKey, JSON.stringify(this.incomeList()));
+    localStorage.setItem(expenseKey, JSON.stringify(this.expenseList()));
   }
 
   private loadFromLocalStorage(): void {
-    const incomes = localStorage.getItem('incomes');
-    const expenses = localStorage.getItem('expenses');
+    const { incomeKey, expenseKey } = this.getStorageKeys();
+    const incomes = localStorage.getItem(incomeKey);
+    const expenses = localStorage.getItem(expenseKey);
 
     if (incomes) {
       const parsedIncomes = JSON.parse(incomes);
@@ -110,6 +133,8 @@ export class CashFlowService {
           createdAt: new Date(income.createdAt),
         }))
       );
+    } else {
+      this.incomeList.set([]);
     }
 
     if (expenses) {
@@ -121,6 +146,8 @@ export class CashFlowService {
           createdAt: new Date(expense.createdAt),
         }))
       );
+    } else {
+      this.expenseList.set([]);
     }
   }
 }

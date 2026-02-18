@@ -1,24 +1,29 @@
 
-
 <div class="app-container">
-  <nav class="navbar">
-    <div class="nav-brand">
-      <h1>💰 Cash Flow Dashboard</h1>
-    </div>
-    <ul class="nav-menu">
-      <li><a [routerLink]="'/income'" routerLinkActive="active">Add Income</a></li>
-      <li><a [routerLink]="'/expense'" routerLinkActive="active">Add Expense</a></li>
-      <li><a [routerLink]="'/dashboard/monthly'" routerLinkActive="active">Monthly View</a></li>
-      <li><a [routerLink]="'/dashboard/yearly'" routerLinkActive="active">Yearly View</a></li>
-    </ul>
-  </nav>
+  @if (isAuthenticated()) {
+    <nav class="navbar">
+      <div class="nav-brand">
+        <h1>💰 Cash Flow Dashboard</h1>
+        <span class="user-info">👤 {{ currentUser()?.name }}</span>
+      </div>
+      <ul class="nav-menu">
+        <li><a [routerLink]="'/income'" routerLinkActive="active">Add Income</a></li>
+        <li><a [routerLink]="'/expense'" routerLinkActive="active">Add Expense</a></li>
+        <li><a [routerLink]="'/dashboard/monthly'" routerLinkActive="active">Monthly View</a></li>
+        <li><a [routerLink]="'/dashboard/yearly'" routerLinkActive="active">Yearly View</a></li>
+        <li><button class="btn-logout" (click)="logout()">Logout</button></li>
+      </ul>
+    </nav>
+  }
 
-  <main class="main-content">
+  <main class="main-content" [class.full-height]="!isAuthenticated()">
     <router-outlet></router-outlet>
   </main>
 
-  <footer class="footer">
-    <p>&copy; 2026 Cash Flow Dashboard. Track your business finances easily.</p>
-  </footer>
+  @if (isAuthenticated()) {
+    <footer class="footer">
+      <p>&copy; 2026 Cash Flow Dashboard. Track your business finances easily.</p>
+    </footer>
+  }
 </div>
 
