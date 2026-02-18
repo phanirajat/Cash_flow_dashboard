@@ -5,56 +5,148 @@
       <p>Track your business finances easily</p>
     </div>
 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="phoneNumber">Phone Number:</label>
-        <div class="phone-input-wrapper">
-          <span class="phone-prefix">+91</span>
+    <!-- Step 1: Phone Number -->
+    @if (currentStep() === 'phone') {
+      <form [formGroup]="phoneForm" (ngSubmit)="sendOtp()" class="login-form">
+        <div class="form-group">
+          <label for="phoneNumber">Phone Number:</label>
+          <div class="phone-input-wrapper">
+            <span class="phone-prefix">+91</span>
+            <input
+              type="tel"
+              id="phoneNumber"
+              formControlName="phoneNumber"
+              placeholder="Enter 10-digit mobile number"
+              maxlength="10"
+              inputmode="numeric"
+              autofocus
+            />
+          </div>
+          @if (phoneForm.get('phoneNumber')?.invalid && phoneForm.get('phoneNumber')?.touched) {
+            <span class="error">Phone number must be 10 digits</span>
+          }
+        </div>
+
+        <button
+          type="submit"
+          [disabled]="!phoneForm.valid || isLoading()"
+          class="btn-primary"
+        >
+          {{ isLoading() ? 'Sending OTP...' : 'Send OTP' }}
+        </button>
+
+        @if (errorMessage()) {
+          <div class="error-banner">
+            {{ errorMessage() }}
+          </div>
+        }
+      </form>
+    }
+
+    <!-- Step 2: OTP Verification -->
+    @if (currentStep() === 'otp') {
+      <form [formGroup]="otpForm" (ngSubmit)="verifyOtpAndLogin()" class="login-form">
+        <div class="otp-header">
+          <p class="otp-sent-to">
+            OTP sent to <strong>+91 {{ formatPhoneNumber(authService.tempPhone()) }}</strong>
+          </p>
+          <button type="button" class="btn-change-phone" (click)="changePhoneNumber()">
+            Change Phone Number
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label for="otpInput">Enter OTP:</label>
           <input
-            type="tel"
-            id="phoneNumber"
-            formControlName="phoneNumber"
-            placeholder="Enter 10-digit mobile number"
-            maxlength="10"
+            type="text"
+            id="otpInput"
+            formControlName="otp"
+            placeholder="000000"
+            maxlength="6"
             inputmode="numeric"
+            class="otp-input"
+          />
+          @if (otpForm.get('otp')?.invalid && otpForm.get('otp')?.touched) {
+            <span class="error">OTP must be 6 digits</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="name">Name (Optional):</label>
+          <input
+            type="text"
+            id="name"
+            formControlName="name"
+            placeholder="Enter your name"
           />
         </div>
-        @if (loginForm.get('phoneNumber')?.invalid && loginForm.get('phoneNumber')?.touched) {
-          <span class="error">Phone number must be 10 digits</span>
-        }
-      </div>
 
-      <div class="form-group">
-        <label for="name">Name (Optional):</label>
-        <input
-          type="text"
-          id="name"
-          formControlName="name"
-          placeholder="Enter your name"
-        />
-      </div>
-
-      <button
-        type="submit"
-        [disabled]="!loginForm.valid || isLoading()"
-        class="btn-login"
-      >
-        {{ isLoading() ? 'Logging in...' : 'Login' }}
-      </button>
-
-      @if (errorMessage()) {
-        <div class="error-banner">
-          {{ errorMessage() }}
+        <div class="otp-timer">
+          @if (authService.otpExpiry() > 0) {
+            <span class="timer-display">⏱️ {{ formattedExpiry }}</span>
+          } @else {
+            <span class="timer-expired">⏰ OTP Expired</span>
+          }
         </div>
-      }
-    </form>
 
-    <div class="login-info">
+        <div class="button-group">
+          <button
+            type="submit"
+            [disabled]="!otpForm.valid || isLoading() || isOtpExpired"
+            class="btn-primary"
+          >
+            {{ isLoading() ? 'Verifying...' : 'Verify & Login' }}
+          </button>
+
+          <button
+            type="button"
+            (click)="resendOtp()"
+            [disabled]="
+              !canResendOtp() ||
+              isLoading() ||
+              (authService.otpExpiry() > 30)
+            "
+            class="btn-secondary"
+          >
+            @if (resendCountdown() > 0) {
+              Resend in {{ resendCountdown() }}s
+            } @else if (authService.otpExpiry() > 30) {
+              Resend OTP
+            } @else {
+              Resending...
+            }
+          </button>
+        </div>
+
+        @if (errorMessage()) {
+          <div class="error-banner">
+            {{ errorMessage() }}
+          </div>
+        }
+      </form>
+    }
+
+    <!-- Demo OTP Display (Backend Only - Shows in Console) -->
+    <div class="demo-otp-info">
+      <strong>🔐 OTP Authentication Enabled</strong>
       <p>
-        <strong>Demo Login:</strong>
+        An OTP will be sent to your phone number via SMS using Twilio.
       </p>
-      <p>Phone: 9876543210</p>
-      <p>This is a demo app. Your data is stored locally in your browser.</p>
+      <p style="font-size: 0.75rem; margin-top: 0.5rem; color: #666;">
+        Make sure the backend is running on port 3001 with Twilio credentials configured in .env
+      </p>
     </div>
+
+    <!-- Info Box -->
+    @if (currentStep() === 'phone') {
+      <div class="login-info">
+        <p>
+          <strong>Demo Phone Number:</strong>
+        </p>
+        <p>9876543210</p>
+        <p>This is a demo app. Your data is stored locally in your browser.</p>
+      </div>
+    }
   </div>
 </div>
+
