@@ -1,0 +1,110 @@
+<div class="dashboard-container">
+  <h2>Yearly Dashboard</h2>
+
+  <div class="year-selector">
+    <label for="year">Select Year:</label>
+    <input
+      type="number"
+      id="year"
+      [value]="selectedYear()"
+      (change)="onYearChange($event)"
+      min="2000"
+      [max]="currentYear"
+    />
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card income">
+      <h3>Total Income</h3>
+      <p class="amount">₹{{ yearlyIncome() | number: '1.2-2' }}</p>
+    </div>
+    <div class="stat-card expense">
+      <h3>Total Expenses</h3>
+      <p class="amount">₹{{ yearlyExpenses() | number: '1.2-2' }}</p>
+    </div>
+    <div class="stat-card profit" [class.negative]="yearlyProfit() < 0">
+      <h3>Net Profit</h3>
+      <p class="amount">{{ yearlyProfit() < 0 ? '-' : '' }}₹{{ Math.abs(yearlyProfit()) | number: '1.2-2' }}</p>
+    </div>
+  </div>
+
+  <div class="monthly-breakdown">
+    <h3>Month-by-Month Breakdown</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Month</th>
+          <th>Income</th>
+          <th>Expenses</th>
+          <th>Net Profit</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (month of monthlyBreakdown(); track month.monthIndex) {
+          <tr>
+            <td>{{ month.monthName }}</td>
+            <td class="positive">₹{{ month.income.toFixed(2) }}</td>
+            <td class="negative">₹{{ month.expenses.toFixed(2) }}</td>
+            <td [class.positive]="month.profit >= 0" [class.negative]="month.profit < 0">
+              ₹{{ Math.abs(month.profit).toFixed(2) }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="details-section">
+    <div class="section">
+      <h3>All Income ({{ selectedYear() }})</h3>
+      @if (yearlyIncomeList().length > 0) {
+        <table>
+          <thead>
+            <tr>
+              <th>Sender Name</th>
+              <th>Amount</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (income of yearlyIncomeList(); track income.id) {
+              <tr>
+                <td>{{ income.senderName }}</td>
+                <td>₹{{ income.amount.toFixed(2) }}</td>
+                <td>{{ income.date | date: 'MMM d, yyyy' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <p class="no-data">No income recorded for this year</p>
+      }
+    </div>
+
+    <div class="section">
+      <h3>All Expenses ({{ selectedYear() }})</h3>
+      @if (yearlyExpenseList().length > 0) {
+        <table>
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th>Amount</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (expense of yearlyExpenseList(); track expense.id) {
+              <tr>
+                <td>{{ expense.description }}</td>
+                <td>₹{{ expense.amount.toFixed(2) }}</td>
+                <td>{{ expense.date | date: 'MMM d, yyyy' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <p class="no-data">No expenses recorded for this year</p>
+      }
+    </div>
+  </div>
+</div>

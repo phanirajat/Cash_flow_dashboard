@@ -1,0 +1,60 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>💰 Cash Flow Dashboard</h1>
+      <p>Track your business finances easily</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="phoneNumber">Phone Number:</label>
+        <div class="phone-input-wrapper">
+          <span class="phone-prefix">+91</span>
+          <input
+            type="tel"
+            id="phoneNumber"
+            formControlName="phoneNumber"
+            placeholder="Enter 10-digit mobile number"
+            maxlength="10"
+            inputmode="numeric"
+          />
+        </div>
+        @if (loginForm.get('phoneNumber')?.invalid && loginForm.get('phoneNumber')?.touched) {
+          <span class="error">Phone number must be 10 digits</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="name">Name (Optional):</label>
+        <input
+          type="text"
+          id="name"
+          formControlName="name"
+          placeholder="Enter your name"
+        />
+      </div>
+
+      <button
+        type="submit"
+        [disabled]="!loginForm.valid || isLoading()"
+        class="btn-login"
+      >
+        {{ isLoading() ? 'Logging in...' : 'Login' }}
+      </button>
+
+      @if (errorMessage(); track errorMessage()) {
+        <div class="error-banner">
+          {{ errorMessage() }}
+        </div>
+      }
+    </form>
+
+    <div class="login-info">
+      <p>
+        <strong>Demo Login:</strong>
+      </p>
+      <p>Phone: 9876543210</p>
+      <p>This is a demo app. Your data is stored locally in your browser.</p>
+    </div>
+  </div>
+</div>

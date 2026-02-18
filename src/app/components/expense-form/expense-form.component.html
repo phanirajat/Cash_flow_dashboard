@@ -1,0 +1,89 @@
+<div class="form-container">
+  <h2>Add Expense</h2>
+  <form [formGroup]="expenseForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="description">Description:</label>
+      <input
+        type="text"
+        id="description"
+        formControlName="description"
+        placeholder="Enter expense description"
+        required
+      />
+      @if (expenseForm.get('description')?.invalid && expenseForm.get('description')?.touched) {
+        <span class="error">Description is required</span>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="amount">Amount:</label>
+      <input
+        type="number"
+        id="amount"
+        formControlName="amount"
+        placeholder="Enter amount"
+        step="0.01"
+        required
+      />
+      @if (expenseForm.get('amount')?.invalid && expenseForm.get('amount')?.touched) {
+        <span class="error">Amount must be a positive number</span>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="date">Date:</label>
+      <input
+        type="date"
+        id="date"
+        formControlName="date"
+        required
+      />
+      @if (expenseForm.get('date')?.invalid && expenseForm.get('date')?.touched) {
+        <span class="error">Date is required</span>
+      }
+    </div>
+
+    <button
+      type="submit"
+      [disabled]="!expenseForm.valid"
+      class="btn-submit"
+    >
+      Add Expense
+    </button>
+  </form>
+
+  @if (expenseList().length > 0) {
+    <div class="expense-list">
+      <h3>Recent Expenses</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (expense of expenseList(); track expense.id) {
+            <tr>
+              <td>{{ expense.description }}</td>
+              <td>₹{{ expense.amount.toFixed(2) }}</td>
+              <td>{{ expense.date | date: 'MMM d, yyyy' }}</td>
+              <td>
+                <button
+                  type="button"
+                  class="btn-delete"
+                  (click)="deleteExpense(expense.id)"
+                  aria-label="Delete expense for {{ expense.description }}"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

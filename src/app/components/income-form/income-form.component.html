@@ -1,0 +1,89 @@
+<div class="form-container">
+  <h2>Add Income</h2>
+  <form [formGroup]="incomeForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="senderName">Sender Name:</label>
+      <input
+        type="text"
+        id="senderName"
+        formControlName="senderName"
+        placeholder="Enter sender name"
+        required
+      />
+      @if (incomeForm.get('senderName')?.invalid && incomeForm.get('senderName')?.touched) {
+        <span class="error">Sender name is required</span>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="amount">Amount:</label>
+      <input
+        type="number"
+        id="amount"
+        formControlName="amount"
+        placeholder="Enter amount"
+        step="0.01"
+        required
+      />
+      @if (incomeForm.get('amount')?.invalid && incomeForm.get('amount')?.touched) {
+        <span class="error">Amount must be a positive number</span>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="date">Date:</label>
+      <input
+        type="date"
+        id="date"
+        formControlName="date"
+        required
+      />
+      @if (incomeForm.get('date')?.invalid && incomeForm.get('date')?.touched) {
+        <span class="error">Date is required</span>
+      }
+    </div>
+
+    <button
+      type="submit"
+      [disabled]="!incomeForm.valid"
+      class="btn-submit"
+    >
+      Add Income
+    </button>
+  </form>
+
+  @if (incomeList().length > 0) {
+    <div class="income-list">
+      <h3>Recent Income</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Sender Name</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (income of incomeList(); track income.id) {
+            <tr>
+              <td>{{ income.senderName }}</td>
+              <td>₹{{ income.amount.toFixed(2) }}</td>
+              <td>{{ income.date | date: 'MMM d, yyyy' }}</td>
+              <td>
+                <button
+                  type="button"
+                  class="btn-delete"
+                  (click)="deleteIncome(income.id)"
+                  aria-label="Delete income from {{ income.senderName }}"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

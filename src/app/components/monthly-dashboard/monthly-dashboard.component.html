@@ -1,0 +1,82 @@
+<div class="dashboard-container">
+  <h2>Monthly Dashboard</h2>
+
+  <div class="month-selector">
+    <label for="monthYear">Select Month & Year:</label>
+    <input
+      type="month"
+      id="monthYear"
+      [value]="selectedMonth()"
+      (change)="onMonthChange($event)"
+    />
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card income">
+      <h3>Total Income</h3>
+      <p class="amount">₹{{ monthlyIncome() | number: '1.2-2' }}</p>
+    </div>
+    <div class="stat-card expense">
+      <h3>Total Expenses</h3>
+      <p class="amount">₹{{ monthlyExpenses() | number: '1.2-2' }}</p>
+    </div>
+    <div class="stat-card profit" [class.negative]="monthlyProfit() < 0">
+      <h3>Net Profit</h3>
+      <p class="amount">{{ monthlyProfit() < 0 ? '-' : '' }}₹{{ Math.abs(monthlyProfit()) | number: '1.2-2' }}</p>
+    </div>
+  </div>
+
+  <div class="details-section">
+    <div class="section">
+      <h3>Income Received</h3>
+      @if (monthlyIncomeList().length > 0) {
+        <table>
+          <thead>
+            <tr>
+              <th>Sender Name</th>
+              <th>Amount</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (income of monthlyIncomeList(); track income.id) {
+              <tr>
+                <td>{{ income.senderName }}</td>
+                  <td>₹{{ income.amount.toFixed(2) }}</td>
+                <td>{{ income.date | date: 'MMM d, yyyy' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <p class="no-data">No income recorded for this month</p>
+      }
+    </div>
+
+    <div class="section">
+      <h3>Expenses</h3>
+      @if (monthlyExpenseList().length > 0) {
+        <table>
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th>Amount</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (expense of monthlyExpenseList(); track expense.id) {
+              <tr>
+                <td>{{ expense.description }}</td>
+                  <td>₹{{ expense.amount.toFixed(2) }}</td>
+                <td>{{ expense.date | date: 'MMM d, yyyy' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <p class="no-data">No expenses recorded for this month</p>
+      }
+    </div>
+  </div>
+</div>
