@@ -1,6 +1,5 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
-import { RouterModule, Router } from '@angular/router';
-import { AuthService } from './services/auth.service';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -10,15 +9,5 @@ import { CommonModule } from '@angular/common';
   styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class App {
-  authService = inject(AuthService);
-  private router = inject(Router);
+export class App {}
 
-  isAuthenticated = this.authService.isAuthenticated;
-  currentUser = this.authService.currentUser;
-
-  logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
-  }
-}
