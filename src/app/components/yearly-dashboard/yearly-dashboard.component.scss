@@ -3,11 +3,25 @@
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem;
+    border-radius: 6px;
+  }
 }
 
 h2 {
   margin-bottom: 2rem;
   color: #333;
+
+  @media (max-width: 480px) {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+  }
 }
 
 .year-selector {
@@ -15,11 +29,21 @@ h2 {
   gap: 1rem;
   margin-bottom: 2rem;
   align-items: center;
+  flex-wrap: wrap;
+
+  @media (max-width: 480px) {
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
 }
 
 label {
   font-weight: 500;
   color: #555;
+
+  @media (max-width: 480px) {
+    font-size: 0.9rem;
+  }
 }
 
 input[type="number"] {
@@ -28,6 +52,14 @@ input[type="number"] {
   border-radius: 4px;
   font-size: 1rem;
   width: 120px;
+
+  @media (max-width: 480px) {
+    padding: 0.4rem;
+    font-size: 0.9rem;
+    width: auto;
+    flex: 1;
+    min-width: 100px;
+  }
 
   &:focus {
     outline: none;
@@ -41,6 +73,16 @@ input[type="number"] {
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
 }
 
 .stat-card {
@@ -49,17 +91,38 @@ input[type="number"] {
   text-align: center;
   color: white;
 
+  @media (max-width: 768px) {
+    padding: 1.2rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem;
+  }
+
   h3 {
     margin: 0 0 0.5rem 0;
     font-size: 0.95rem;
     font-weight: 500;
     opacity: 0.9;
+
+    @media (max-width: 480px) {
+      font-size: 0.85rem;
+      margin-bottom: 0.3rem;
+    }
   }
 
   .amount {
     margin: 0;
     font-size: 2rem;
     font-weight: bold;
+
+    @media (max-width: 768px) {
+      font-size: 1.6rem;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 1.3rem;
+    }
   }
 
   &.income {
@@ -85,26 +148,61 @@ input[type="number"] {
   background: #f9f9f9;
   border-radius: 8px;
 
+  @media (max-width: 768px) {
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
   h3 {
     margin-top: 0;
     margin-bottom: 1rem;
     color: #333;
+
+    @media (max-width: 480px) {
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+    }
   }
 
   table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.95rem;
+
+    @media (max-width: 768px) {
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 0.75rem;
+    }
   }
 
   thead {
     background: #f0f0f0;
+
+    @media (max-width: 480px) {
+      display: none;
+    }
   }
 
   th, td {
     padding: 0.75rem;
     text-align: left;
     border-bottom: 1px solid #ddd;
+
+    @media (max-width: 768px) {
+      padding: 0.5rem;
+    }
+
+    @media (max-width: 480px) {
+      padding: 0.4rem;
+    }
   }
 
   th {
@@ -114,6 +212,36 @@ input[type="number"] {
 
   tr:hover {
     background: #f0f0f0;
+  }
+
+  tr {
+    @media (max-width: 480px) {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: white;
+
+      &:hover {
+        background: #f9f9f9;
+      }
+
+      td {
+        border-bottom: none;
+        padding: 0.5rem 0;
+
+        &::before {
+          content: attr(data-label);
+          font-weight: 600;
+          color: #2196F3;
+          display: block;
+          font-size: 0.8rem;
+        }
+      }
+    }
   }
 
   .positive {
@@ -134,6 +262,11 @@ input[type="number"] {
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    gap: 1rem;
   }
 }
 
@@ -143,22 +276,47 @@ input[type="number"] {
     color: #333;
     border-bottom: 2px solid #eee;
     padding-bottom: 0.5rem;
+
+    @media (max-width: 480px) {
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+    }
   }
 
   table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.95rem;
+
+    @media (max-width: 768px) {
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 0.75rem;
+    }
   }
 
   thead {
     background: #f5f5f5;
+
+    @media (max-width: 480px) {
+      display: none;
+    }
   }
 
   th, td {
     padding: 0.75rem;
     text-align: left;
     border-bottom: 1px solid #eee;
+
+    @media (max-width: 768px) {
+      padding: 0.5rem;
+    }
+
+    @media (max-width: 480px) {
+      padding: 0.4rem;
+    }
   }
 
   th {
@@ -170,10 +328,44 @@ input[type="number"] {
     background: #f9f9f9;
   }
 
+  tr {
+    @media (max-width: 480px) {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: #fafafa;
+
+      &:hover {
+        background: #f0f0f0;
+      }
+
+      td {
+        border-bottom: none;
+        padding: 0.5rem 0;
+
+        &::before {
+          content: attr(data-label);
+          font-weight: 600;
+          color: #2196F3;
+          display: block;
+          font-size: 0.8rem;
+        }
+      }
+    }
+  }
+
   .no-data {
     padding: 1rem;
     color: #999;
     text-align: center;
     font-style: italic;
+
+    @media (max-width: 480px) {
+      padding: 0.75rem;
+    }
   }
 }
